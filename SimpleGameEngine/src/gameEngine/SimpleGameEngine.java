@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 
 public class SimpleGameEngine implements KeyListener, MouseListener
 {
-	// Cristian Camillo, 2019-10-14
+	// Cristian Camillo, 2019-10-14 (if for some reason you want to use this, please credit me)
 	
 	// COPY-PASTE THIS CLASS (and this class only) INTO OTHER PROJECTS.
 	// NO NEED TO EDIT THIS CLASS
