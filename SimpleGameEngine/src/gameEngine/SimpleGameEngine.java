@@ -108,11 +108,7 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 			{
 				long timeLeft = t1 + SECOND / this.FPSCap - System.nanoTime() - 1000000; // stabilize the framerate
 				if(timeLeft > 0)
-					try
-					{
-						Thread.sleep(timeLeft / 1000000, (int)(timeLeft % 1000000));
-					}
-					catch(InterruptedException e){}
+					Thread.sleep(timeLeft / 1000000, (int)(timeLeft % 1000000));
 				while(System.nanoTime() < t1 + (SECOND * 1f / this.FPSCap)); // stabilize the framerate
 			}
 			
