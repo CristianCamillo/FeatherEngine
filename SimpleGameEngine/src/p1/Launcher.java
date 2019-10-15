@@ -14,10 +14,10 @@ public class Launcher
 	
 	public static void main(String[] args) throws Exception
 	{		
-		new SimpleGameEngine(1600, 900, "SimpleGameEngine", true, 120, true, false)
+		new SimpleGameEngine(1600, 900, "SimpleGameEngine", true, 120, true, true)
 		{
 			public void update()
-			{
+			{				
 				if(key(KeyEvent.VK_ESCAPE))
 					stop();
 				
@@ -40,7 +40,7 @@ public class Launcher
 				}
 				
 				if(keyToggle(KeyEvent.VK_R))
-					setSize(1280, 720);
+					setSize(1280, 720, false);
 				
 				if(keyToggle(KeyEvent.VK_T))
 					setTitle((int)(Math.random() * 10000) + "");
@@ -50,6 +50,9 @@ public class Launcher
 				
 				if(keyToggle(KeyEvent.VK_C))
 					setFPSCap(getFPSCap() == 120 ? 60 : 120);
+				
+				if(keyToggle(KeyEvent.VK_F))
+					setSize(1280, 720, !getFullscreen());
 			}
 			
 			public void render()
@@ -57,6 +60,8 @@ public class Launcher
 				Graphics g = getGraphics();
 				
 				g.drawLine(0, 0, getWidth(), getHeight());
+				
+				g.drawString(getWidth() + " x " + getHeight(), 200, 200);
 			}
 		};
 		
