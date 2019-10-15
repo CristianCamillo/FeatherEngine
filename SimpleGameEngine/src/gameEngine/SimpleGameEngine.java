@@ -3,6 +3,7 @@ package gameEngine;
 import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -12,7 +13,7 @@ import javax.swing.JFrame;
 
 public class SimpleGameEngine implements KeyListener, MouseListener
 {
-	// Cristian Camillo, 2019-10-14 (if for some reason you want to use this, please credit me)
+	// Cristian Camillo, 2019-10-15 (if for some reason you want to use this, please credit me)
 	
 	// COPY-PASTE THIS CLASS (and this class only) INTO OTHER PROJECTS.
 	// NO NEED TO EDIT THIS CLASS
@@ -21,8 +22,8 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	/* Base components                                                   */
 	/*********************************************************************/
 	
-	private final JFrame frame;
-	private final Canvas canvas;
+	private JFrame frame;	
+	private Canvas canvas;
 	
 	/*********************************************************************/
 	/* Settings                                                          */
@@ -66,43 +67,17 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	/*********************************************************************/
 	
 	public SimpleGameEngine(int width, int height, String title, boolean FPSLock, int FPSCap, boolean showFPS, boolean fullscreen) throws Exception
-	{
-		if(width < 1 || height < 1)
-			throw new IllegalArgumentException("Width and height must be greater than 0.");
-		
+	{		
 		if(title == null)
 			throw new NullPointerException("The title cannot be null.");
 		
-		this.width = width;
-		this.height = height;
 		this.title = title;
 		this.FPSLock = FPSLock;
 		this.FPSCap = FPSCap;
 		this.showFPS = showFPS;
-		this.fullscreen = fullscreen;
+		this.fullscreen = false;
 		
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setTitle(title);
-		frame.setResizable(false);
-		
-		canvas = new Canvas();
-		canvas.setSize(width, height);
-		
-		frame.add(canvas);
-		frame.pack();
-		frame.setLocationRelativeTo(null);		
-		frame.setVisible(true);
-		frame.setAlwaysOnTop(true);
-		frame.setAlwaysOnTop(false);
-		
-		canvas.createBufferStrategy(2);
-		
-		frame.addKeyListener(this);
-		canvas.addKeyListener(this);
-		
-		frame.addMouseListener(this);
-		canvas.addMouseListener(this);
+		setSize(width, height, fullscreen);
 	
 		long t0 = System.nanoTime();
 		long t1 = t0;
@@ -133,14 +108,18 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 			{
 				long timeLeft = t1 + SECOND / this.FPSCap - System.nanoTime() - 1000000; // stabilize the framerate
 				if(timeLeft > 0)
+					try
+					{
 						Thread.sleep(timeLeft / 1000000, (int)(timeLeft % 1000000));
+					}
+					catch(InterruptedException e){}
 				while(System.nanoTime() < t1 + (SECOND * 1f / this.FPSCap)); // stabilize the framerate
 			}
 			
 			t1 = System.nanoTime();
 			elapsedTime = t1 - start;
 		}
-		
+	
 		frame.dispose();
 	}
 	
@@ -152,7 +131,7 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	public final Graphics getGraphics()
 	{
 		Graphics g = canvas.getBufferStrategy().getDrawGraphics();
-		g.clearRect(0, 0, width, height);
+		g.clearRect(0, 0, getWidth(), getHeight());
 		
 		return g;
 	}
@@ -166,6 +145,44 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	public final void stop()
 	{
 		running = false;
+	}
+	
+	private void createWindow()
+	{
+		if(frame != null)
+			frame.dispose();
+		
+		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setTitle(title);
+		frame.setResizable(false);	
+		
+		canvas = new Canvas();			
+		canvas.setSize(width, height);
+		
+		frame.add(canvas);
+		
+		if(fullscreen)
+		{
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			frame.setUndecorated(true);
+		}
+		else
+		{	
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+		}
+		
+		frame.setVisible(true);
+		frame.setAlwaysOnTop(true);
+		frame.setAlwaysOnTop(false);
+		
+		canvas.createBufferStrategy(2);
+		
+		frame.addKeyListener(this);
+		frame.addMouseListener(this);
+		canvas.addKeyListener(this);
+		canvas.addMouseListener(this);
 	}
 	
 	/*********************************************************************/
@@ -207,7 +224,7 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 		return showFPS;
 	}
 	
-	public final boolean isFullscreen()
+	public final boolean getFullscreen()
 	{
 		return fullscreen;
 	}
@@ -241,18 +258,40 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	/* Setters                                                           */
 	/*********************************************************************/
 	
-	public final void setSize(int width, int height)
+	public final void setSize(int width, int height, boolean fullscreen)
 	{
-		this.width = width;
-		this.height = height;
-		canvas.setSize(width, height);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
+		if(fullscreen && this.fullscreen)
+			return;
+		
+		int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		
+		if(fullscreen)
+		{
+			this.width = screenWidth;
+			this.height = screenHeight;
+		}
+		else
+		{			
+			if(width < 1 || height < 1 || width > screenWidth || height > screenHeight)
+				throw new IllegalArgumentException("Width and/or height not compatible with the screen resolution.");
+			
+			this.width = width;
+			this.height = height;
+		}
+		
+		this.fullscreen = fullscreen;
+		
+		createWindow();
 	}
 	
 	public final void setTitle(String title)
 	{
+		if(title == null)
+			throw new NullPointerException("The title cannot be null.");
+		
 		this.title = title;
+		
 		if(!showFPS)
 			frame.setTitle(title);
 		else
@@ -272,11 +311,6 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	public final void setShowFPS(boolean showFPS)
 	{
 		this.showFPS = showFPS;
-	}
-	
-	public final void setFullscreen(boolean fullscreen)
-	{
-		this.fullscreen = fullscreen;
 	}
 	
 	/*********************************************************************/
