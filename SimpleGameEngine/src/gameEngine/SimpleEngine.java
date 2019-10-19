@@ -1,4 +1,4 @@
-package gameEngine;
+package engine;
 
 import java.awt.Canvas;
 import java.awt.Graphics;
@@ -11,9 +11,9 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
-public class SimpleGameEngine implements KeyListener, MouseListener
+public class SimpleEngine implements KeyListener, MouseListener
 {
-	// Cristian Camillo, 2019-10-15 (if for some reason you want to use this, please credit me)
+	// Cristian Camillo, 2019-10-19 (if you want to use this, please credit me)
 	
 	// COPY-PASTE THIS CLASS (and this class only) INTO OTHER PROJECTS.
 	// NO NEED TO EDIT THIS CLASS
@@ -66,7 +66,7 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 	/* Constructor                                                       */
 	/*********************************************************************/
 	
-	public SimpleGameEngine(int width, int height, String title, boolean FPSLock, int FPSCap, boolean showFPS, boolean fullscreen) throws Exception
+	public SimpleEngine(int width, int height, String title, boolean FPSLock, int FPSCap, boolean showFPS, boolean fullscreen) throws Exception
 	{		
 		if(title == null)
 			throw new NullPointerException("The title cannot be null.");
@@ -119,6 +119,10 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 		frame.dispose();
 	}
 	
+	/*********************************************************************/
+	/* Misc                                                              */
+	/*********************************************************************/
+	
 	/* "throws Exception" is included to allow exception throwing methods into the methods */
 	
 	public void update() throws Exception {}
@@ -149,7 +153,7 @@ public class SimpleGameEngine implements KeyListener, MouseListener
 			frame.dispose();
 		
 		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle(title);
 		frame.setResizable(false);	
 		
