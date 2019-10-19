@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import gameEngine.SimpleGameEngine;
+import engine.SimpleEngine;
 
 public class Launcher
 {	
@@ -14,7 +14,7 @@ public class Launcher
 	
 	public static void main(String[] args) throws Exception
 	{		
-		new SimpleGameEngine(1600, 900, "SimpleGameEngine", true, 120, true, true)
+		new SimpleEngine(1600, 900, "SimpleGameEngine", true, 120, true, true)
 		{
 			public void update()
 			{				
