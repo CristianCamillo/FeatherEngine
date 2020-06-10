@@ -92,7 +92,7 @@ public class FeatherEngine implements KeyListener, MouseListener
 		this.useBuffer = useBuffer;
 	}
 	
-	public void start()
+	public final void start()
 	{
 		setSize(width, height, fullscreen);
 		
@@ -101,7 +101,7 @@ public class FeatherEngine implements KeyListener, MouseListener
 			long start = System.nanoTime();
 			
 			update(elapsedTime / 1_000_000_000f);
-			render(useBuffer ? buffer.getGraphics() : g, frameBuffer);						
+			render(useBuffer ? buffer.getGraphics() : g, useBuffer ? frameBuffer : null);						
 			
 			if(showFPS)
 				frame.setTitle(getTitle() + " - " + String.format("%.2f", getFPS()));
