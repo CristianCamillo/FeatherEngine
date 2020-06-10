@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 
 public class FeatherEngine implements KeyListener, MouseListener
 {
-	// Cristian Camillo, 2020-05-24
+	// Cristian Camillo, 2020-06-10
 	
 	// All-in one lightweight game engine
 	
